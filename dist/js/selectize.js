@@ -490,6 +490,7 @@
 	
 	
 	var Selectize = function($input, settings) {
+	
 		var key, i, n, dir, input, self = this;
 		input = $input[0];
 		input.selectize = self;
@@ -1573,7 +1574,6 @@
 	
 			for (i = 0; i < n; i++) {
 				option      = self.options[results.items[i].id];
-				option_html = self.render('option', option);
 				optgroup    = option[self.settings.optgroupField] || '';
 				optgroups   = $.isArray(optgroup) ? optgroup : [optgroup];
 	
@@ -1586,6 +1586,7 @@
 						groups[optgroup] = document.createDocumentFragment();
 						groups_order.push(optgroup);
 					}
+	                option_html = self.render('option', option);
 					groups[optgroup].appendChild(option_html);
 				}
 			}
@@ -2605,7 +2606,6 @@
 			var html = '';
 			var cache = false;
 			var self = this;
-			var regex_tag = /^[\t \r\n]*<([a-z][a-z0-9\-_]*(?:\:[a-z][a-z0-9\-_]*)?)/i;
 	
 			if (templateName === 'option' || templateName === 'item') {
 				value = hash_key(data[self.settings.valueField]);
@@ -2613,7 +2613,8 @@
 			}
 	
 			// pull markup from cache if it exists
-			if (cache) {
+	        // BRhodes 9/6/2020: bug fix. Cache auto-removes option if duplicate values exist in multiple optgroups
+			if (cache && !data.optgroup) {
 				if (!isset(self.renderCache[templateName])) {
 					self.renderCache[templateName] = {};
 				}
@@ -2643,7 +2644,7 @@
 			}
 	
 			// update cache
-			if (cache) {
+	        if (cache && !data.optgroup) {
 				self.renderCache[templateName][value] = html[0];
 			}
 	
@@ -2709,6 +2710,8 @@
 		preload: false,
 		allowEmptyOption: false,
 		closeAfterSelect: false,
+	
+	    enableCreateDuplicate: false,   // BRhodes: added 9/5/2020
 	
 		scrollDuration: 60,
 		loadThrottle: 300,

@@ -40,7 +40,7 @@ module.exports = function(grunt) {
 			'watch'
 	])
 
-	grunt.registerTask('clean_bootstrap2_css', 'Cleans CSS rules ocurring before the header comment.', function() {
+	grunt.registerTask('clean_bootstrap2_css', 'Cleans CSS rules occurring before the header comment.', function() {
 		var file = 'dist/css/selectize.bootstrap2.css';
 		var source = fs.readFileSync(file, 'utf8');
 		grunt.file.write(file, source.replace(/^(.|\s)+?\/\*/m, '/*'));

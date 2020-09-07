@@ -1082,7 +1082,6 @@ $.extend(Selectize.prototype, {
 
 		for (i = 0; i < n; i++) {
 			option      = self.options[results.items[i].id];
-			option_html = self.render('option', option);
 			optgroup    = option[self.settings.optgroupField] || '';
 			optgroups   = $.isArray(optgroup) ? optgroup : [optgroup];
 
@@ -1095,6 +1094,7 @@ $.extend(Selectize.prototype, {
 					groups[optgroup] = document.createDocumentFragment();
 					groups_order.push(optgroup);
 				}
+                option_html = self.render('option', option);
 				groups[optgroup].appendChild(option_html);
 			}
 		}
@@ -2122,7 +2122,8 @@ $.extend(Selectize.prototype, {
 		}
 
 		// pull markup from cache if it exists
-		if (cache) {
+        // BRhodes 9/6/2020: bug fix. Cache auto-removes option if duplicate values exist in multiple optgroups
+		if (cache && !data.optgroup) {
 			if (!isset(self.renderCache[templateName])) {
 				self.renderCache[templateName] = {};
 			}
@@ -2152,7 +2153,7 @@ $.extend(Selectize.prototype, {
 		}
 
 		// update cache
-		if (cache) {
+        if (cache && !data.optgroup) {
 			self.renderCache[templateName][value] = html[0];
 		}
 
